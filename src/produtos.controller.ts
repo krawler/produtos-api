@@ -1,3 +1,4 @@
+import { UpdateResult } from 'typeorm';
 import {
   Body,
   Controller,
@@ -7,41 +8,35 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { Produto } from './produto.model';
+import Produto from './produto.model';
+import { ProdutosService } from './produtos.service';
 
 @Controller('produtos')
 export class ProdutosController {
-  produtos: Produto[] = [
-    new Produto('Livro01', 'TDD BDD na prática', 25),
-    new Produto('Livro02', 'Iniciando com flutter', 49.80),
-    new Produto('Livro03', 'Como lidar com as camadas do Kubernates', 62.50)
-  ];
+  constructor(private readonly service: ProdutosService) {}
 
   @Get()
-  getAll(): Produto[] {
-    return this.produtos;
+  getAll(): Promise<Produto[]> {
+    return this.service.getAll();
   }
 
   @Get(':id')
-  getOne(@Param() params): Produto {
-    return this.produtos[0];
+  getOne(@Param() params): Promise<Produto> {
+    return this.service.getOne(params.id);
   }
 
   @Post()
-  save(@Body() produto): string {
-    console.log(produto);
-    return 'Produto criado';
+  save(@Body() produto): Promise<Produto> {
+    return this.service.save(produto);
   }
 
   @Put()
-  edit(@Body() produto): string {
-    console.log(produto);
-    return 'Produto atualizado';
+  edit(@Body() produto): Promise<UpdateResult> {
+    return this.service.edit(produto);
   }
 
   @Delete(':id ')
-  delete(@Param() params): string {
-    console.log(params);
-    return 'apaga o produto' + params.id;
+  delete(@Param() params): Promise<void> {
+    return this.service.remove(params.id);
   }
 }

@@ -1,14 +1,16 @@
-export class Produto {
-    
-    id: number;
-    codigo: string;
-    nome: string;
-    preco: number;
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-    constructor(codigo: string, nome: string, preco: number){
-        this.codigo = codigo;
-        this.nome = nome;
-        this.preco = preco;
-    }
+@Entity('produtos')
+export default class Produto {
+  @PrimaryGeneratedColumn()
+  id: number;
 
+  @Column()
+  codigo: string;
+
+  @Column()
+  nome: string;
+
+  @Column('decimal', { precision: 10, scale: 2 })
+  preco: number;
 }
